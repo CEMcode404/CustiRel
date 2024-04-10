@@ -1,39 +1,44 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">crm</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+﻿<Sidebar @ref="sidebar"
+        BadgeText="v1.0.0"
+         IconName="IconName.BootstrapFill"
+         Title="CustiRel"
+         DataProvider="SidebarDataProvider" />
 
 @code {
-    private bool collapseNavMenu = true;
+    Sidebar sidebar = default!;
+    IEnumerable<NavItem>? navItems;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
     {
-        collapseNavMenu = !collapseNavMenu;
+        if (navItems is null)
+            navItems = GetNavItems();
+
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItems()
+    {
+        navItems = new List<NavItem>
+        {
+            new NavItem { Id = "1", Href = "", Match=NavLinkMatch.All ,IconName = IconName.House, Text = "Home", Class = "fw-semibold"},
+
+            new NavItem { Id = "2", IconName = IconName.People, Text = "CRM"},
+            new NavItem { Id = "3", Href = "/accounts", IconName = IconName.Building, Text = "Accounts", ParentId = "2", Class = "px-3"},
+            new NavItem { Id = "4", Href = "/contacts", IconName = IconName.Journal, Text = "Contacts", ParentId = "2", Class = "px-3"},
+            new NavItem {Id = "5", Href = "/leads", IconName = IconName.PersonVCard, Text = "Leads", ParentId = "2", Class = "px-3"},
+            new NavItem {Id = "6", Href = "/opportunities", IconName = IconName.CurrencyDollar, Text = "Opportunities", ParentId = "2", Class = "px-3"},
+
+            new NavItem {Id = "7", IconName = IconName.Activity, Text = "Activities"},
+            new NavItem { Id = "9", Href = "/emails", IconName = IconName.Mailbox, Text = "Emails", ParentId = "7", Class = "px-3"},
+            new NavItem { Id = "10", Href = "/calendar", IconName = IconName.Calendar, Text = "Calendar", ParentId = "7", Class = "px-3"},
+            new NavItem { Id = "11", Href = "/meetings", IconName = IconName.CalendarCheck, Text = "Meetings", ParentId = "7", Class = "px-3"},
+            new NavItem { Id = "12", Href = "/calls", IconName = IconName.Telephone, Text = "Calls", ParentId = "7", Class = "px-3"},
+
+            new NavItem { Id = "13", IconName = IconName.Tools, Text = "Support"},
+            new NavItem { Id = "14", Href = "/cases", IconName = IconName.Briefcase, Text = "Cases", ParentId = "13", Class = "px-3"},
+            new NavItem { Id = "15", Href = "/knowledge-base", IconName = IconName.Book, Text = "Knowledge Base", ParentId = "13", Class = "px-3"},
+        };
+
+        return navItems;
     }
 }
