@@ -1,0 +1,10 @@
+<div class="row">
+    <div class="col-md-5 col-sm-12">
+        <AutoComplete @bind-Value="_searchTerm"
+                      TItem="SearchBarItem"
+                      DataProvider="SearchTermResultDataProvider"
+                      PropertyName="Name"
+                      Placeholder="Search a customer..."
+                      OnChanged="(SearchBarItem searchTerm) => _OnAutoCompleteChanged(searchTerm)" />
+    </div>
+</div>
