@@ -1,0 +1,44 @@
+@typeparam TItem
+
+<Grid TItem="TItem" Class="table table-hover" DataProvider="DataProvider"
+    AllowPaging="@(_featureRegistry.Contains<GridPagination>())" AllowSorting="true"
+    AllowSelection="@(_featureRegistry.Contains<GridSelection<TItem>>())"
+    PageSize="@(_featureRegistry.Get<GridPagination>().PageSize)"
+    SelectionMode="@(_featureRegistry.Get<GridSelection<TItem>>().GetSelectionMode())"
+    SelectedItemsChanged="OnSelectedItemsChanged" Responsive="true">
+
+    @foreach (var (item, index) in GetProperties<TItem>())
+    {
+        //need to check for null here because i use a null-forgiving operator below
+        //to avoid reference error. null-conditinal are not possible at lambda expressions
+        //avoid modying item object
+        if (item.Name != null)
+        {
+            <GridColumn TItem="TItem" HeaderText="@item.Name" PropertyName="@item.Name"
+                Sortable="@(_featureRegistry.Get<GridSort>().IsSortColumn(index))"
+                SortKeySelector="sortItem => GetPropertyValue(item.Name, sortItem) as System.IComparable">
+                @(GetPropertyValue(item.Name, context))
+            </GridColumn>
+        }
+    }
+
+    @if (_featureRegistry.Contains<GridRowActions>())
+    {
+        <GridColumn TItem="TItem" PropertyName="IsActive" Filterable="false" Sortable="false" TextAlignment="Alignment.End">
+            <HeaderContent>
+
+            </HeaderContent>
+            <ChildContent>
+                <Dropdown>
+                    <DropdownToggleButton Color="ButtonColor.None"></DropdownToggleButton>
+                    <DropdownMenu>
+                        @foreach (GridAction item in (_featureRegistry.Get<GridRowActions>().Actions))
+                        {
+                            <DropdownItem onclick=@item.Action Type="ButtonType.Link">@item.Name</DropdownItem>
+                        }
+                    </DropdownMenu>
+                </Dropdown>
+            </ChildContent>
+        </GridColumn>
+    }
+</Grid>

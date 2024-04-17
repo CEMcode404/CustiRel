@@ -1,9 +1,20 @@
 @page "/accounts"
 
+@using crm.Shared.Component.Grid.BaseGrid
 @using crm.Shared.Component.SearchBar
+@using crm.Shared.Models
 
 <PageTitle>Accounts</PageTitle>
 
 <h1>Accounts</h1>
 
 <SearchBar OnAutoCompleteChanged="OnAutoCompleteChanged" Vocabulary="Vocabulary"></SearchBar>
+<BaseGrid TItem="Account" Data="@Data" Features="@(new IGridFeature[] { 
+        new GridPagination(), 
+        new GridSort { Columns = new int[] { 1 } }, 
+        new GridSelection<Account>(),
+        new GridRowActions { Actions = [ 
+                new GridAction { Name = "func", Action = () => { Console.WriteLine(1);}}
+        ]}
+})">
+</BaseGrid>
