@@ -1,6 +1,7 @@
 @page "/accounts"
 
 @using crm.Shared.Component.Grid.BaseGrid
+@using crm.Shared.Component.OffCanvas
 @using crm.Shared.Component.SearchBar
 @using crm.Shared.Models
 
@@ -11,10 +12,16 @@
 <SearchBar OnAutoCompleteChanged="OnAutoCompleteChanged" Vocabulary="Vocabulary"></SearchBar>
 <BaseGrid TItem="Account" Data="@Data" Features="@(new IGridFeature[] { 
         new GridPagination(), 
-        new GridSort { Columns = new int[] { 1 } }, 
+        new GridSort { Columns = new int[] { 1, 2, 3, 4, 5 } }, 
         new GridSelection<Account>(),
         new GridRowActions { Actions = [ 
-                new GridAction { Name = "func", Action = () => { Console.WriteLine(1);}}
+                new GridAction { Name = "View", Action = ViewAccount},
+                new GridAction { Name = "Edit", Action = EditAccount},
+                new GridAction { Name = "Remove", Action = RemoveAccount},
         ]}
 })">
 </BaseGrid>
+
+<OffCanvas Control="@_viewAccountControl" Title="View" Size="OffCanvasSize.Large"></OffCanvas>
+<OffCanvas Control="@_editAccountControl" Title="Edit" Size="OffCanvasSize.Large"></OffCanvas>
+<OffCanvas Control="@_removeAccountControl" Title="Remove"></OffCanvas>
