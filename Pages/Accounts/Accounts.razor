@@ -1,5 +1,6 @@
 @page "/accounts"
 
+@using crm.Shared.Component.BinaryDialog
 @using crm.Shared.Component.Grid.BaseGrid
 @using crm.Shared.Component.OffCanvas
 @using crm.Shared.Component.SearchBar
@@ -24,4 +25,6 @@
 
 <OffCanvas Control="@_viewAccountControl" Title="View" Size="OffCanvasSize.Large"></OffCanvas>
 <OffCanvas Control="@_editAccountControl" Title="Edit" Size="OffCanvasSize.Large"></OffCanvas>
-<OffCanvas Control="@_removeAccountControl" Title="Remove"></OffCanvas>
+<BinaryDialog Control="@_removeAccountControl" Title="Remove" Message="Are you sure you want remove this?"
+        OnYes="() => {Console.WriteLine('Y');}" OnNo="() => {Console.WriteLine('N');}">
+</BinaryDialog>

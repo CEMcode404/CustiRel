@@ -1,3 +1,4 @@
+using crm.Shared.Component.BinaryDialog;
 using crm.Shared.Component.OffCanvas;
 using crm.Shared.Component.SearchBar;
 using crm.Shared.Models;
@@ -9,7 +10,7 @@ namespace crm.Pages.Accounts
     {
         private readonly OffCanvasControl _viewAccountControl = new();
         private readonly OffCanvasControl _editAccountControl = new();
-        private readonly OffCanvasControl _removeAccountControl = new();
+        private readonly BinaryDialogControl _removeAccountControl = new();
         private List<Account> Data =
         [
             new Account("Don Belle", "Tech", "fdfd", "US", "New York"),
@@ -33,7 +34,7 @@ namespace crm.Pages.Accounts
 
         private void RemoveAccount()
         {
-            _removeAccountControl.ShowOffCanvas();
+            _removeAccountControl.ShowBinaryDialog();
         }
 
     }
