@@ -16,11 +16,6 @@ namespace crm.Pages.Accounts
             new Account("Don Belle", "Tech", "fdfd", "US", "New York"),
             new Account("Johnny Test", "Food", "fdfd", "Japan", "Tokyo"),
         ];
-        private IEnumerable<SearchBarItem> Vocabulary { get; set; } = [new SearchBarItem(1, "dd"), new SearchBarItem(1, "a")];
-        private void OnAutoCompleteChanged(SearchBarItem searchTerm)
-        {
-
-        }
 
         private void ViewAccount()
         {
@@ -35,6 +30,12 @@ namespace crm.Pages.Accounts
         private void RemoveAccount()
         {
             _removeAccountControl.ShowBinaryDialog();
+        }
+
+        async private Task<string[]> HandleOnChange(string inputString)
+        {
+            await Task.CompletedTask; // use this if there is no await to avoid compiler warning;
+            return ["dfd", "fdfd"];
         }
 
     }

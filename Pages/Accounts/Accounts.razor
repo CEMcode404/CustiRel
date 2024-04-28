@@ -10,7 +10,7 @@
 
 <h1>Accounts</h1>
 
-<SearchBar OnAutoCompleteChanged="OnAutoCompleteChanged" Vocabulary="Vocabulary"></SearchBar>
+<SearchBar OnAutoCompleteChanged="HandleOnChange"></SearchBar>
 <BaseGrid TItem="Account" Data="@Data" Features="@(new IGridFeature[] { 
         new GridPagination(), 
         new GridSort { Columns = new int[] { 1, 2, 3, 4, 5 } }, 

@@ -1,51 +1,65 @@
-using BlazorBootstrap;
+using crm.Shared.Utilities;
 using Microsoft.AspNetCore.Components;
 
 namespace crm.Shared.Component.SearchBar
 {
     public partial class SearchBar : ComponentBase
     {
-        public SearchBar()
+        [Parameter]
+        public Func<string, Task<string[]>>? OnAutoCompleteChanged { get; set; }
+        private string[] resultList = [];
+        private bool isHidden = true;
+
+        private readonly DebouncerDecorator Debouncer = new(1000);
+        private async void HandleOnInput(ChangeEventArgs e)
         {
-            Vocabulary = [];
+            if (OnAutoCompleteChanged != null && e.Value != null)
+            {
+                string inputString = ((string)e.Value).Trim();
+                if (inputString == "")
+                {
+                    Debouncer.CancelDebounce();
+                    HideDropdown();
+                    await InvokeAsync(StateHasChanged);
+                }
+                else if (inputString.Length > 0)
+                {
+                    var debounceAction = Debouncer.Debounce(async () =>
+                    {
+                        resultList = await OnAutoCompleteChanged.Invoke((string)e.Value);
+                        ShowDropdown();
+                        await InvokeAsync(StateHasChanged);
+                    });
+
+                    await debounceAction();
+                }
+            }
         }
 
-        [Parameter]
-        public Action<SearchBarItem>? OnAutoCompleteChanged { get; set; }
-        [Parameter]
-        public IEnumerable<SearchBarItem>? Vocabulary { get; set; }
-
-        private string? _searchTerm;
-
-        public async Task<AutoCompleteDataProviderResult<SearchBarItem>> SearchTermResultDataProvider(AutoCompleteDataProviderRequest<SearchBarItem> request)
+        private void ShowDropdown()
         {
-            Vocabulary ??= [];
-
-            return await Task.FromResult(request.ApplyTo(Vocabulary.OrderBy(searchTermItem => searchTermItem.Name)));
+            isHidden = false;
         }
 
-        private void _OnAutoCompleteChanged(SearchBarItem result)
+        private void HideDropdown()
         {
-            OnAutoCompleteChanged?.Invoke(result);
+            isHidden = true;
+        }
+
+        private async void HandleOnBlur()
+        {
+            //since e.relatedTarget is not available in c# 
+            //i use a delay instead, to allow clicks to trigger after onblur inside
+            // the dropdown
+            await Task.Delay(100);
+            HideDropdown();
+            await InvokeAsync(StateHasChanged);
         }
     }
 
-    public class SearchBarItem(int Id, string Name)
+    public class SearchBarResultItem(string Name)
     {
-
-        private string _name = Name;
-        private int _id = Id;
-
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public string Name { get; set; } = Name;
+        public Action? Action { get; set; }
     }
 }
